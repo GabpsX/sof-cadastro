@@ -1,3 +1,39 @@
-{
-  "Version": "1.0"
-}
+          salvar_dados() {
+            const campos = ["nome", "cpf", "rg", "data_nasc", "email", "endereco", "cidade", "bairro", "estado", "cep", "telefone"];
+            const dadosFormulario = new FormData();
+            
+            // Adiciona os valores dos campos do formulário ao FormData
+            campos.forEach(campo => {
+              const valor = document.getElementById(campo).value;
+              dadosFormulario.append(campo, valor);
+            });
+          
+            // Adiciona a imagem selecionada ao FormData
+            const inputFile = document.getElementById("input-file");
+            const imagem = inputFile.files[0];
+
+            if (typeof imagem === 'object') {
+              dadosFormulario.append("imagem", imagem);
+            } else {
+              dadosFormulario.append("imagem", "");
+            }
+            
+
+            console.log(dadosFormulario);
+
+            const requestOptions = {
+              method: "POST",
+              body: dadosFormulario
+            };
+            console.log(requestOptions);
+
+            fetch("/insere_dados", requestOptions)
+              .then(response => response.json())
+              .then(data => {
+                showPopup("Usuário inserido no Banco de Dados 😃");
+              })
+              .catch(error => {
+                console.log(error);
+                showPopup("Erro ao inserir usuário no Banco de Dados 😢");
+              });
+          }
