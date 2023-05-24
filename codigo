@@ -1,0 +1,75 @@
+     window.onload = function() {
+          // Selecionar os elementos com as classes "valor_unit", "und", "total" e "valor_total"
+          var valorUnitElements = document.querySelectorAll('.valor_unit');
+          var undElements = document.querySelectorAll('.und');
+          var totalElements = document.querySelectorAll('.total');
+          var valorTotalElement = document.querySelector('.valor_total');
+        
+          // Função para calcular o subtotal e atualizar a exibição
+          function calcularSubtotal() {
+            var subtotal = 0;
+            var count = 0; // Contador para controlar a quantidade de elementos com valores preenchidos
+        
+            // Percorrer os elementos e obter os valores
+            for (var i = 0; i < valorUnitElements.length; i++) {
+              var valorUnit = parseFloat(valorUnitElements[i].innerText.replace('R$', '').replace(',', '.').trim());
+              var und = undElements[i].innerText.trim();
+        
+              if (und === '') {
+                und = null; // Definir como null se o campo estiver vazio
+              } else {
+                und = parseInt(und);
+              }
+        
+              var total = valorUnit * und;
+        
+              if (!isNaN(total)) {
+                totalElements[i].innerText = 'R$ ' + total.toFixed(2);
+                subtotal += total;
+                count++;
+              } else {
+                totalElements[i].innerText = ''; // Limpar o campo se o valor for NaN
+              }
+        
+              // Preencher automaticamente a primeira unidade com 1 se o valor unitário estiver preenchido
+              if (i === 0 && valorUnitElements[i].innerText !== '' && undElements[i].innerText === '') {
+                undElements[i].innerText = '1';
+              }
+            }
+        
+            // Atualizar a exibição do subtotal
+            if (count > 0) {
+              valorTotalElement.innerHTML = "<b contenteditable='true'>TOTAL R$ " + subtotal.toFixed(2) + "</b>";
+            } else {
+              valorTotalElement.innerHTML = ""; // Limpar o campo se nenhum valor estiver preenchido
+            }
+          }
+        
+          // Chamar a função de cálculo do subtotal inicialmente
+          calcularSubtotal();
+        
+          // Adicionar evento de input para recalcular o subtotal quando os valores são alterados
+          for (var i = 0; i < valorUnitElements.length; i++) {
+            valorUnitElements[i].addEventListener('input', calcularSubtotal);
+            undElements[i].addEventListener('input', calcularSubtotal);
+          }
+        
+          // Testes unitários para verificar se os elementos estão sendo selecionados corretamente
+          console.log('--- Testes Unitários ---');
+          console.log('Elementos selecionados - valor_unit:');
+          for (var i = 0; i < valorUnitElements.length; i++) {
+            console.log(valorUnitElements[i]);
+          }
+          console.log('Elementos selecionados - und:');
+          for (var i = 0; i < undElements.length; i++) {
+            console.log(undElements[i]);
+          }
+          console.log('Elementos selecionados - total:');
+          for (var i = 0; i < totalElements.length; i++) {
+            console.log(totalElements[i]);
+          }
+          console.log('Elemento selecionado - valor_total:');
+          console.log(valorTotalElement);
+          console.log('-----------------------');
+        };
+        
